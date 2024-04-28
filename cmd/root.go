@@ -3,6 +3,7 @@ package cmd
 import (
 	"log"
 
+	"github.com/Thothica/thothica/cmd/profile"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +23,10 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-        log.Fatal(err)
-    }
+		log.Fatal(err)
+	}
 }
 
+func init() {
+	rootCmd.AddCommand(profile.ProfileCmd)
+}
