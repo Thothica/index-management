@@ -17,3 +17,6 @@ var listCmd = &cobra.Command{
 		fmt.Println("list profile called")
 	},
 }
+
+func init() {
+}

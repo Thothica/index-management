@@ -10,7 +10,7 @@ var (
 	Username string
 	Password string
 	Endpoint string
-    Name    string
+	Name     string
 
 	createCmd = &cobra.Command{
 		Use:   "create [flags]",
@@ -33,4 +33,8 @@ func init() {
 	createCmd.MarkFlagRequired("password")
 	createCmd.Flags().StringVarP(&Name, "name", "n", "", "Name for connection profile")
 	createCmd.MarkFlagRequired("name")
+}
+
+func createProfile() {
+
 }
