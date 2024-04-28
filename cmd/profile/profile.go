@@ -6,10 +6,10 @@ import (
 )
 
 type Profile struct {
-	Name     string `yaml:"name"`
-	Endpoint string `yaml:"endpoint"`
-	Admin    string `yaml:"admin"`
-	Password string `yaml:"password"`
+	Name     string `mapstructure:"name"`
+	Endpoint string `mapstructure:"endpoint"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
 }
 
 var (
