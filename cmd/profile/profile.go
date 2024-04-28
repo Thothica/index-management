@@ -14,4 +14,5 @@ var ProfileCmd = &cobra.Command{
 
 func init() {
 	ProfileCmd.AddCommand(listCmd)
+    ProfileCmd.AddCommand(createCmd)
 }
