@@ -1,8 +1,6 @@
 package profile
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -26,21 +24,15 @@ var (
 )
 
 func init() {
-	ProfileCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.thothica.yaml)")
-
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
-	} else {
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".thothica")
-	}
+	viper.AddConfigPath(".")
+	viper.SetConfigType("yaml")
+	viper.SetConfigName(".thothica")
 
 	if err := viper.ReadInConfig(); err != nil {
-        cobra.CheckErr(err)
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			cobra.CheckErr("No config file found, use thothica profile create to create a profile")
+		}
+		cobra.CheckErr(err)
 	}
 
 	ProfileCmd.AddCommand(listCmd)
