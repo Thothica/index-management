@@ -12,8 +12,13 @@ type Profile struct {
 	Password string `mapstructure:"password"`
 }
 
+type Config struct {
+	Profiles []Profile `mapstructure:"profiles"`
+	Current  string    `mapstructure:"current-profile"`
+}
+
 var (
-	cfgFile    string
+    currentProfile Profile
 	ProfileCmd = &cobra.Command{
 		Use:   "profile [command]",
 		Short: "Configuration for opensearch cluster",
@@ -37,4 +42,6 @@ func init() {
 
 	ProfileCmd.AddCommand(listCmd)
 	ProfileCmd.AddCommand(createCmd)
+	ProfileCmd.AddCommand(useCmd)
+	ProfileCmd.AddCommand(pingCmd)
 }

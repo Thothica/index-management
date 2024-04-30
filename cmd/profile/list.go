@@ -24,7 +24,7 @@ var (
 
 			for _, profile := range profiles {
 				fmt.Print("\n")
-				fmt.Printf("Profile Name %v :-\n", profile.Name)
+				fmt.Printf("Profile Name    - %v\n", profile.Name)
 				fmt.Printf("    endpoint    - %v\n", profile.Endpoint)
 				fmt.Printf("    user        - %v\n", profile.User)
 				fmt.Printf("    password    - %v\n\n", profile.Password)
