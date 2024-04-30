@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	profiles []Profile
+	c Config
 
 	listCmd = &cobra.Command{
 		Use:   "list",
@@ -18,11 +18,11 @@ var (
     `,
 
 		Run: func(cmd *cobra.Command, args []string) {
-			if err := viper.UnmarshalKey("profiles", &profiles); err != nil {
+			if err := viper.Unmarshal(&c); err != nil {
 				cobra.CheckErr(err)
 			}
 
-			for _, profile := range profiles {
+			for _, profile := range c.Profiles {
 				fmt.Print("\n")
 				fmt.Printf("Profile Name    - %v\n", profile.Name)
 				fmt.Printf("    endpoint    - %v\n", profile.Endpoint)

@@ -18,8 +18,8 @@ type Config struct {
 }
 
 var (
-    currentProfile Profile
-	ProfileCmd = &cobra.Command{
+	currentProfile Profile
+	ProfileCmd     = &cobra.Command{
 		Use:   "profile [command]",
 		Short: "Configuration for opensearch cluster",
 		Long: `profile (thothica profile) is used to manage connection configuration
