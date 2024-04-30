@@ -8,8 +8,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "thothica [command]",
 	Short: "An internal cli too to manage semantic search",
-	Long: `
-    Welcome to Thothica cli !!
+	Long: `Welcome to Thothica cli !!
     You can manage semantic search cluster using this tool.
 
     This tool allows you to do many things like
