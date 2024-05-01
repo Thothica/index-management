@@ -45,6 +45,15 @@ func init() {
 
 	ProfileCmd.AddCommand(listCmd)
 	ProfileCmd.AddCommand(createCmd)
-	// ProfileCmd.AddCommand(useCmd)
+	ProfileCmd.AddCommand(useCmd)
 	// ProfileCmd.AddCommand(pingCmd)
+}
+
+func GetCurrentProfile() *Profile {
+	for _, profile := range c.Profiles {
+		if profile.Name == c.Current {
+			return &profile
+		}
+	}
+	return nil
 }
