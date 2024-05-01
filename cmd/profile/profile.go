@@ -46,7 +46,7 @@ func init() {
 	ProfileCmd.AddCommand(listCmd)
 	ProfileCmd.AddCommand(createCmd)
 	ProfileCmd.AddCommand(useCmd)
-	// ProfileCmd.AddCommand(pingCmd)
+	ProfileCmd.AddCommand(pingCmd)
 }
 
 func GetCurrentProfile() *Profile {

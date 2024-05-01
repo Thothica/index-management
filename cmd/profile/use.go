@@ -21,7 +21,7 @@ var (
 			for _, profile := range c.Profiles {
 				if profile.Name == profileToSwitch {
 					c.Current = profileToSwitch
-					fmt.Printf("Now using profile - %v", c.Current)
+					fmt.Printf("Now using profile - %v\n", c.Current)
 					viper.Set("current-profile", c.Current)
 					if err := viper.WriteConfig(); err != nil {
 						cobra.CheckErr(err)
@@ -29,7 +29,7 @@ var (
 					return
 				}
 			}
-			fmt.Printf("Profile - %v does not exist", profileToSwitch)
+			fmt.Printf("Profile - %v does not exist\n", profileToSwitch)
 		},
 	}
 )
