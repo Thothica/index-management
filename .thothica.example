@@ -1,0 +1,7 @@
+profiles:
+    - name: docker-local
+      endpoint: https://localhost:9200
+      user: admin
+      password: foobar
+
+current-profile: docker-local
