@@ -18,8 +18,8 @@ type Config struct {
 }
 
 var (
-	currentProfile Profile
-	ProfileCmd     = &cobra.Command{
+	c          Config
+	ProfileCmd = &cobra.Command{
 		Use:   "profile [command]",
 		Short: "Configuration for opensearch cluster",
 		Long: `profile (thothica profile) is used to manage connection configuration
@@ -39,9 +39,12 @@ func init() {
 		}
 		cobra.CheckErr(err)
 	}
+	if err := viper.Unmarshal(&c); err != nil {
+		cobra.CheckErr(err)
+	}
 
 	ProfileCmd.AddCommand(listCmd)
 	ProfileCmd.AddCommand(createCmd)
-	ProfileCmd.AddCommand(useCmd)
-	ProfileCmd.AddCommand(pingCmd)
+	// ProfileCmd.AddCommand(useCmd)
+	// ProfileCmd.AddCommand(pingCmd)
 }

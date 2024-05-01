@@ -4,12 +4,9 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
-	c Config
-
 	listCmd = &cobra.Command{
 		Use:   "list",
 		Short: "Lists all exsisting opensearch configuration",
@@ -18,10 +15,7 @@ var (
     `,
 
 		Run: func(cmd *cobra.Command, args []string) {
-			if err := viper.Unmarshal(&c); err != nil {
-				cobra.CheckErr(err)
-			}
-
+			fmt.Printf("\nProfile in use: %v\n", c.Current)
 			for _, profile := range c.Profiles {
 				fmt.Print("\n")
 				fmt.Printf("Profile Name    - %v\n", profile.Name)
