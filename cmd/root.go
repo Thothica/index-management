@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/Thothica/thothica/cmd/index"
 	"github.com/Thothica/thothica/cmd/profile"
 	"github.com/spf13/cobra"
 )
@@ -26,4 +27,5 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(profile.ProfileCmd)
+    rootCmd.AddCommand(index.IndexCmd)
 }
