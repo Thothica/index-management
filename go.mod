@@ -3,6 +3,7 @@ module github.com/Thothica/thothica
 go 1.22.2
 
 require (
+	github.com/opensearch-project/opensearch-go v1.1.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 )
