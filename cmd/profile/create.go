@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -19,7 +20,24 @@ var (
     used to connect this cli to a opensearch cluster.
     `,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("create profile called")
+			newProfile := &Profile{
+				Name,
+				Endpoint,
+				Username,
+				Password,
+			}
+
+			c.Profiles = append(c.Profiles, *newProfile)
+			c.Current = Name
+
+			viper.Set("current-profile", c.Current)
+			viper.Set("profiles", c.Profiles)
+
+			if err := viper.WriteConfig(); err != nil {
+				cobra.CheckErr(err)
+			}
+
+			fmt.Printf("Now using profile - %v", c.Current)
 		},
 	}
 )
@@ -33,8 +51,4 @@ func init() {
 	createCmd.MarkFlagRequired("password")
 	createCmd.Flags().StringVarP(&Name, "name", "n", "", "Name for connection profile")
 	createCmd.MarkFlagRequired("name")
-}
-
-func createProfile() {
-
 }
