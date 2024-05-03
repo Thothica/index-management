@@ -22,7 +22,7 @@ var (
 		Long:  "performs semantic search on the provided index.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if _, err := tea.NewProgram(initialModel()).Run(); err != nil {
-                cobra.CheckErr(err)
+				cobra.CheckErr(err)
 			}
 		},
 	}
@@ -47,9 +47,11 @@ func initialModel() model {
 		case 0:
 			t.Placeholder = "Index Name"
 			t.CharLimit = 50
+			t.PromptStyle = focusedStyle
+			t.TextStyle = focusedStyle
 			t.Focus()
 		case 1:
-			t.Placeholder = "Search"
+			t.Placeholder = "Search query"
 			t.CharLimit = 100
 		}
 
