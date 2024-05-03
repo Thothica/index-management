@@ -2,8 +2,11 @@ package search
 
 import (
 	"fmt"
+	"log"
 	"strings"
+	"time"
 
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -21,6 +24,12 @@ var (
 		Short: "perform semantic search on index.",
 		Long:  "performs semantic search on the provided index.",
 		Run: func(cmd *cobra.Command, args []string) {
+            // remove before pr
+			f, err := tea.LogToFile("debug.log", "simple")
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer f.Close()
 			if _, err := tea.NewProgram(initialModel()).Run(); err != nil {
 				cobra.CheckErr(err)
 			}
@@ -31,12 +40,27 @@ var (
 type model struct {
 	focusIndex int
 	inputs     []textinput.Model
+	spinner    spinner.Model
+	loading    bool
+}
+
+type Response string
+type httpError error
+
+func SearchRequest() tea.Msg {
+	time.Sleep(2 * time.Second)
+	fmt.Println("completed")
+	return Response("request succeeded, here is json {}")
 }
 
 func initialModel() model {
+	s := spinner.New()
+	s.Spinner = spinner.Dot
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+
 	m := model{
-		inputs:     make([]textinput.Model, 2),
-		focusIndex: 0,
+		inputs:  make([]textinput.Model, 2),
+		spinner: s,
 	}
 
 	for i := range m.inputs {
@@ -76,7 +100,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			s := msg.String()
 
 			if s == "enter" && m.focusIndex == len(m.inputs) {
-				return m, tea.Quit
+				m.loading = true
+				cmds := make([]tea.Cmd, 2)
+				cmds[0] = m.spinner.Tick
+				cmds[1] = SearchRequest
+				return m, tea.Batch(cmds...)
 			}
 
 			if s == "up" || s == "shift+tab" {
@@ -106,6 +134,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			return m, tea.Batch(cmds...)
 		}
+	case Response:
+		m.loading = false
+		return m, tea.Quit
+
+	default:
+		var cmd tea.Cmd
+		m.spinner, cmd = m.spinner.Update(msg)
+		return m, cmd
 	}
 
 	updateInputs := func(msg tea.Msg) tea.Cmd {
@@ -135,7 +171,12 @@ func (m model) View() string {
 	if m.focusIndex == len(m.inputs) {
 		button = &focusedButton
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", *button)
+
+	if m.loading {
+		fmt.Fprintf(&b, "\n\n   %s Searching your query...\n\n", m.spinner.View())
+	} else {
+		fmt.Fprintf(&b, "\n\n%s\n\n", *button)
+	}
 
 	return b.String()
 }
