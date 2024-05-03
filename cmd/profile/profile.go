@@ -30,6 +30,7 @@ var (
 
 func init() {
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("$HOME")
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".thothica")
 

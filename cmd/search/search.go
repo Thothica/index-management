@@ -47,6 +47,5 @@ func initialModel() model {
 }
 
 func (m model) Init() tea.Cmd {
-    return textinput.Blink
+	return textinput.Blink
 }
-

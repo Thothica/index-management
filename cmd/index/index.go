@@ -17,5 +17,5 @@ var (
 )
 
 func init() {
-    IndexCmd.AddCommand(listCmd)
+	IndexCmd.AddCommand(listCmd)
 }
