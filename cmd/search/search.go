@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
+	"github.com/Thothica/thothica/internal/opensearch"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,6 +14,7 @@ import (
 )
 
 var (
+	c             = opensearch.NewClient()
 	focusedStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 	blurredStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 	noStyle       = lipgloss.NewStyle()
@@ -24,12 +25,6 @@ var (
 		Short: "perform semantic search on index.",
 		Long:  "performs semantic search on the provided index.",
 		Run: func(cmd *cobra.Command, args []string) {
-            // remove before pr
-			f, err := tea.LogToFile("debug.log", "simple")
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer f.Close()
 			if _, err := tea.NewProgram(initialModel()).Run(); err != nil {
 				cobra.CheckErr(err)
 			}
@@ -42,15 +37,20 @@ type model struct {
 	inputs     []textinput.Model
 	spinner    spinner.Model
 	loading    bool
+	complete   bool
 }
 
-type Response string
-type httpError error
+type SemanticSearchResponse string
+type SemanticSearchError error
 
-func SearchRequest() tea.Msg {
-	time.Sleep(2 * time.Second)
-	fmt.Println("completed")
-	return Response("request succeeded, here is json {}")
+func SearchRequest(query, index string) tea.Cmd {
+	return func() tea.Msg {
+		res, err := c.SemanticSearch(query, index, 5)
+		if err != nil {
+			return SemanticSearchError(err)
+		}
+		return SemanticSearchResponse(res)
+	}
 }
 
 func initialModel() model {
@@ -101,10 +101,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if s == "enter" && m.focusIndex == len(m.inputs) {
 				m.loading = true
-				cmds := make([]tea.Cmd, 2)
-				cmds[0] = m.spinner.Tick
-				cmds[1] = SearchRequest
-				return m, tea.Batch(cmds...)
+				return m, tea.Batch(m.spinner.Tick, SearchRequest(m.inputs[1].Value(), m.inputs[0].Value()))
 			}
 
 			if s == "up" || s == "shift+tab" {
@@ -134,8 +131,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			return m, tea.Batch(cmds...)
 		}
-	case Response:
+	case SemanticSearchResponse:
+		fmt.Println(msg)
 		m.loading = false
+		m.complete = true
+		return m, tea.Quit
+
+	case SemanticSearchError:
+		fmt.Println(msg)
+		m.loading = false
+		m.complete = true
 		return m, tea.Quit
 
 	default:
@@ -160,10 +165,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	var b strings.Builder
 
-	for i := range m.inputs {
-		b.WriteString(m.inputs[i].View())
-		if i < len(m.inputs)-1 {
-			b.WriteRune('\n')
+	if !m.complete {
+		for i := range m.inputs {
+			b.WriteString(m.inputs[i].View())
+			if i < len(m.inputs)-1 {
+				b.WriteRune('\n')
+			}
 		}
 	}
 
@@ -174,7 +181,8 @@ func (m model) View() string {
 
 	if m.loading {
 		fmt.Fprintf(&b, "\n\n   %s Searching your query...\n\n", m.spinner.View())
-	} else {
+	}
+	if !m.complete {
 		fmt.Fprintf(&b, "\n\n%s\n\n", *button)
 	}
 
