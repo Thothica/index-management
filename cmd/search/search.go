@@ -2,7 +2,6 @@ package search
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/Thothica/thothica/internal/opensearch"
