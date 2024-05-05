@@ -9,7 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewClient() *opensearch.Client {
+type Client struct {
+	*opensearch.Client
+}
+
+func NewClient() Client {
 	currentProfile := profile.GetCurrentProfile()
 
 	opensearchConfig := &opensearch.Config{
@@ -26,5 +30,5 @@ func NewClient() *opensearch.Client {
 		cobra.CheckErr(err)
 	}
 
-	return client
+	return Client{client}
 }
