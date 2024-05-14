@@ -131,16 +131,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Batch(cmds...)
 		}
 	case SemanticSearchResponse:
-		fmt.Println(msg)
+        fmt.Println(msg)
 		m.loading = false
 		m.complete = true
 		return m, tea.Quit
 
 	case SemanticSearchError:
-		fmt.Println(msg)
-		m.loading = false
-		m.complete = true
-		return m, tea.Quit
+        cobra.CheckErr(msg)
+		return nil, tea.Quit
 
 	default:
 		var cmd tea.Cmd

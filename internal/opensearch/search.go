@@ -2,8 +2,8 @@ package opensearch
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/opensearch-project/opensearch-go/opensearchapi"
@@ -35,16 +35,25 @@ func (c Client) SemanticSearch(query, index string, size int) (string, error) {
 		Body:  searchBody,
 	}
 
+	var searchResponse map[string]interface{}
+
 	res, err := semanticSearchRequest.Do(context.Background(), c.Client)
 	if err != nil {
 		return "", err
 	}
 	defer res.Body.Close()
 
-	bodyString, err := io.ReadAll(res.Body)
+	err = json.NewDecoder(res.Body).Decode(&searchResponse)
 	if err != nil {
 		return "", err
 	}
 
-	return string(bodyString), nil
+	data := searchResponse["hits"].(map[string]interface{})["hits"].([]interface{})
+
+	searchResults, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		return "", err
+	}
+
+	return string(searchResults), nil
 }
