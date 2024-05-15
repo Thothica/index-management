@@ -21,7 +21,8 @@ var (
 				fmt.Printf("Profile Name    - %v\n", profile.Name)
 				fmt.Printf("    endpoint    - %v\n", profile.Endpoint)
 				fmt.Printf("    user        - %v\n", profile.User)
-				fmt.Printf("    password    - %v\n\n", profile.Password)
+				fmt.Printf("    password    - %v\n", profile.Password)
+				fmt.Printf("    model-id    - %v\n\n", profile.DefaultModel)
 			}
 		},
 	}
