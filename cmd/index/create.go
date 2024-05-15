@@ -4,6 +4,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type index struct {
+	Settings struct {
+		IndexKNN        bool   `json:"index.knn"`
+		DefaultPipeline string `json:"default_pipeline"`
+	} `json:"settings"`
+	Mappings struct {
+		Properties map[string]interface{} `json:"properties"`
+	} `json:"mappings"`
+}
+
 var (
 	Pipeline    string
 	VectorIndex string
