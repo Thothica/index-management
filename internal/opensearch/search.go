@@ -50,7 +50,7 @@ func (c Client) SemanticSearch(query, index string, size int) (string, error) {
 
 	data := searchResponse["hits"].(map[string]interface{})["hits"].([]interface{})
 
-	searchResults, err := json.MarshalIndent(data, "", "\t")
+	searchResults, err := json.MarshalIndent(data, "", " ")
 	if err != nil {
 		return "", err
 	}
