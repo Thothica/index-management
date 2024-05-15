@@ -1,6 +1,12 @@
 package index
 
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +25,7 @@ var (
 	VectorIndex string
 	Filename    string
 	data        []map[string]interface{}
+    BadFormatError = errors.New("Wrong file format, only json file of format - \n \t[{\"data_key\":\"data_value\", ..}..{}] are accepted")
 	i           index
 	createCmd   = &cobra.Command{
 		Use:   "create",
@@ -26,6 +33,45 @@ var (
 		Long:  `create (thothica index create) is a tool which helps you to define mappings and create index in opensearch to perform semantic search.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			InitialseIndex(&i)
+
+			filetype := strings.Split(Filename, ".")[1]
+			if filetype != "json" {
+				cobra.CheckErr(BadFormatError)
+			}
+
+			file, err := os.Open(Filename)
+			if err != nil {
+				cobra.CheckErr(err)
+			}
+
+			err = json.NewDecoder(file).Decode(&data)
+			if err != nil {
+				cobra.CheckErr(err)
+			}
+
+			for k, v := range data[0] {
+				switch v.(type) {
+				case string:
+					i.Mappings.Properties[k] = map[string]string{
+						"type": "text",
+					}
+				case float32:
+					i.Mappings.Properties[k] = map[string]string{
+						"type": "float",
+					}
+				case int:
+					i.Mappings.Properties[k] = map[string]string{
+						"type": "integer",
+					}
+				}
+			}
+
+			IndexJson, err := json.MarshalIndent(i, "", "   ")
+			if err != nil {
+				cobra.CheckErr(err)
+			}
+
+			fmt.Println(string(IndexJson))
 		},
 	}
 )

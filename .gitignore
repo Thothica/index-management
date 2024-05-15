@@ -1,5 +1,5 @@
 .DS_Store
 thothica
 .thothica
-
+*.json
 dist/
