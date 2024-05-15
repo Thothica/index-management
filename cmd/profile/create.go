@@ -12,6 +12,7 @@ var (
 	Password string
 	Endpoint string
 	Name     string
+	ModelId  string
 
 	createCmd = &cobra.Command{
 		Use:   "create [flags]",
@@ -25,6 +26,7 @@ var (
 				Endpoint,
 				Username,
 				Password,
+				ModelId,
 			}
 
 			c.Profiles = append(c.Profiles, *newProfile)
@@ -51,4 +53,6 @@ func init() {
 	createCmd.MarkFlagRequired("password")
 	createCmd.Flags().StringVarP(&Name, "name", "n", "", "Name for connection profile")
 	createCmd.MarkFlagRequired("name")
+	createCmd.Flags().StringVarP(&ModelId, "model-id", "m", "", "ModelID for the default embedding model")
+	createCmd.MarkFlagRequired("model-id")
 }
