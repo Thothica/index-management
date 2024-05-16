@@ -139,8 +139,13 @@ func initialModel() model {
 	t.SetValue(IndexBody)
 	t.FocusedStyle.CursorLine = magentaStyle
 
+	s := spinner.New()
+	s.Spinner = spinner.Dot
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+
 	return model{
 		textarea:    t,
+		spinner:     s,
 		apiResponse: "",
 	}
 }
@@ -180,6 +185,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	m.textarea, cmd = m.textarea.Update(msg)
+	cmds = append(cmds, cmd)
+	m.spinner, cmd = m.spinner.Update(msg)
 	cmds = append(cmds, cmd)
 	return m, tea.Batch(cmds...)
 }
