@@ -9,3 +9,7 @@ var (
 		Long:  "Allows you to create and view pipelines in opensearch.",
 	}
 )
+
+func init() {
+	pipelineCmd.AddCommand(createCmd)
+}
