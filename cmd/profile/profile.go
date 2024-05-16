@@ -6,10 +6,11 @@ import (
 )
 
 type Profile struct {
-	Name     string `mapstructure:"name"`
-	Endpoint string `mapstructure:"endpoint"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
+	Name         string `mapstructure:"name"`
+	Endpoint     string `mapstructure:"endpoint"`
+	User         string `mapstructure:"user"`
+	Password     string `mapstructure:"password"`
+	DefaultModel string `mapstructure:"default-model,omitempty"`
 }
 
 type Config struct {
@@ -57,4 +58,9 @@ func GetCurrentProfile() *Profile {
 		}
 	}
 	return nil
+}
+
+func GetModelID() string {
+	curr := GetCurrentProfile()
+	return curr.DefaultModel
 }

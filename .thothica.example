@@ -4,3 +4,4 @@ profiles:
       endpoint: https://localhost:9200
       user: admin
       password: foobar
+      default-model: model-id

@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Thothica/thothica/cmd/profile"
 	"github.com/opensearch-project/opensearch-go/opensearchapi"
 )
 
-// NOTE: Change model_id and mapping column (Text_embedding) in searchBody as per your need.
-// This function not meant to be consumed without editing the mapping column inside !!
 func (c Client) SemanticSearch(query, index string, size int) (string, error) {
 	searchBody := strings.NewReader(fmt.Sprintf(`{
                 "_source": {
@@ -22,13 +21,13 @@ func (c Client) SemanticSearch(query, index string, size int) (string, error) {
                         "neural": {
                                 "Text_embedding": {
                                         "query_text": "%v",
-                                        "model_id": "AbDZGo8BB3UUeZ_94CHA",
+                                        "model_id": "%v",
                                         "k": 5
                                 }
                         }
                 },
                 "size": %v
-        }`, query, size))
+        }`, query, profile.GetModelID(), size))
 
 	semanticSearchRequest := opensearchapi.SearchRequest{
 		Index: []string{index},
